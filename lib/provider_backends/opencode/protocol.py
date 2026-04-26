@@ -6,10 +6,11 @@ from provider_core.protocol import (
     REQ_ID_PREFIX,
     make_req_id,
 )
+from provider_backends.opencode.protocol_runtime.prompt import build_opencode_prompt_body
 
 
 def wrap_opencode_prompt(message: str, req_id: str) -> str:
-    message = (message or "").rstrip()
+    message = build_opencode_prompt_body(message)
     return f"{REQ_ID_PREFIX} {req_id}\n\n{message}\n"
 
 

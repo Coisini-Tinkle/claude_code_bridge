@@ -6,9 +6,10 @@ from pathlib import Path
 from agents.models import AgentSpec
 from cli.context import CliContext
 from cli.models import ParsedStartCommand
-from provider_core.caller_env import caller_context_env, export_env_clause
+from provider_core.caller_env import caller_context_env, export_env_clause, join_env_prefix
 from provider_core.contracts import ProviderRuntimeLauncher
 from provider_core.runtime_shared import provider_start_parts
+from provider_profiles import load_resolved_provider_profile
 from workspace.models import WorkspacePlan
 
 
@@ -22,17 +23,39 @@ def build_runtime_launcher() -> ProviderRuntimeLauncher:
 
 
 def build_start_cmd(command: ParsedStartCommand, spec: AgentSpec, runtime_dir, launch_session_id: str) -> str:
+    runtime_dir = Path(runtime_dir)
+    profile = load_resolved_provider_profile(runtime_dir)
     cmd_parts = provider_start_parts('opencode')
     if command.restore:
         cmd_parts.append('--continue')
     cmd_parts.extend(spec.startup_args)
     cmd = ' '.join(shlex.quote(str(part)) for part in cmd_parts)
-    env_prefix = export_env_clause(
-        caller_context_env(actor=spec.name, runtime_dir=Path(runtime_dir), launch_session_id=launch_session_id)
+    env_prefix = join_env_prefix(
+        build_opencode_env_prefix(profile=profile, extra_env=spec.env),
+        export_env_clause(caller_context_env(actor=spec.name, runtime_dir=runtime_dir, launch_session_id=launch_session_id)),
     )
     if env_prefix:
         return f'{env_prefix}; {cmd}'
     return cmd
+
+
+def build_opencode_env_prefix(*, profile=None, extra_env: dict[str, str] | None = None) -> str:
+    explicit_env: dict[str, str] = {}
+    if profile is not None:
+        explicit_env.update(profile.env)
+    if extra_env:
+        explicit_env.update(extra_env)
+    parts: list[str] = []
+    if profile is not None and not profile.inherit_api:
+        from provider_profiles import provider_api_env_keys
+        api_keys = provider_api_env_keys('opencode')
+        parts.extend(f'unset {key}' for key in sorted(api_keys))
+    exports = ' '.join(
+        f'{key}={shlex.quote(value)}' for key, value in sorted(explicit_env.items()) if str(value).strip()
+    )
+    if exports:
+        parts.append(f'export {exports}')
+    return '; '.join(parts)
 
 
 def build_session_payload(
