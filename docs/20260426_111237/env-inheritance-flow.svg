@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 750" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <marker id="aR" viewBox="0 0 10 6" refX="10" refY="3" markerWidth="8" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,3 L0,6 z" fill="#334155"/>
+    </marker>
+    <marker id="aB" viewBox="0 0 10 6" refX="10" refY="3" markerWidth="8" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,3 L0,6 z" fill="#3b82f6"/>
+    </marker>
+    <marker id="aG" viewBox="0 0 10 6" refX="10" refY="3" markerWidth="8" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,3 L0,6 z" fill="#10b981"/>
+    </marker>
+    <marker id="aO" viewBox="0 0 10 6" refX="10" refY="3" markerWidth="8" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,3 L0,6 z" fill="#f59e0b"/>
+    </marker>
+    <marker id="aP" viewBox="0 0 10 6" refX="10" refY="3" markerWidth="8" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,3 L0,6 z" fill="#a855f7"/>
+    </marker>
+    <filter id="sh">
+      <feDropShadow dx="1" dy="1" stdDeviation="2" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <rect width="950" height="750" fill="#fafbfc" rx="8"/>
+
+  <!-- Title -->
+  <text x="475" y="28" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">环境变量继承流程图</text>
+  <text x="475" y="46" text-anchor="middle" font-size="11" fill="#64748b">从 ccb.config 到 tmux pane 的完整环境变量传递路径</text>
+
+  <!-- ===== ROW 1: Config Sources ===== -->
+  <text x="30" y="78" font-size="12" font-weight="600" fill="#64748b">配置源头</text>
+
+  <rect x="30" y="88" width="260" height="65" rx="8" fill="#fefce8" stroke="#eab308" stroke-width="2" filter="url(#sh)"/>
+  <text x="160" y="110" text-anchor="middle" font-size="12" font-weight="600" fill="#a16207">ccb.config — agents.{name}</text>
+  <text x="160" y="128" text-anchor="middle" font-size="10" fill="#78716c">env: {KEY: val, ...}</text>
+  <text x="160" y="143" text-anchor="middle" font-size="10" fill="#78716c">provider_profile: {mode, env, inherit_*}</text>
+
+  <rect x="330" y="88" width="220" height="65" rx="8" fill="#fefce8" stroke="#eab308" stroke-width="2" filter="url(#sh)"/>
+  <text x="440" y="110" text-anchor="middle" font-size="12" font-weight="600" fill="#a16207">~/.claude/settings.json</text>
+  <text x="440" y="128" text-anchor="middle" font-size="10" fill="#78716c">env.ANTHROPIC_BASE_URL</text>
+  <text x="440" y="143" text-anchor="middle" font-size="10" fill="#78716c">(仅 Claude 使用)</text>
+
+  <rect x="590" y="88" width="160" height="65" rx="8" fill="#fefce8" stroke="#eab308" stroke-width="2" filter="url(#sh)"/>
+  <text x="670" y="110" text-anchor="middle" font-size="12" font-weight="600" fill="#a16207">os.environ</text>
+  <text x="670" y="128" text-anchor="middle" font-size="10" fill="#78716c">当前进程环境</text>
+  <text x="670" y="143" text-anchor="middle" font-size="10" fill="#78716c">(API keys, SHELL, ...)</text>
+
+  <!-- ===== ROW 2: Parsing & Materialization ===== -->
+  <text x="30" y="190" font-size="12" font-weight="600" fill="#64748b">解析 &amp; 物化</text>
+
+  <rect x="80" y="200" width="300" height="60" rx="8" fill="#faf5ff" stroke="#a855f7" stroke-width="2" filter="url(#sh)"/>
+  <text x="230" y="222" text-anchor="middle" font-size="12" font-weight="600" fill="#7e22ce">AgentSpec + ProviderProfileSpec</text>
+  <text x="230" y="240" text-anchor="middle" font-size="10" fill="#78716c">config_loader → parsing_runtime → agent_specs</text>
+
+  <rect x="430" y="200" width="340" height="60" rx="8" fill="#faf5ff" stroke="#a855f7" stroke-width="2" filter="url(#sh)"/>
+  <text x="600" y="222" text-anchor="middle" font-size="12" font-weight="600" fill="#7e22ce">materialize_provider_profile()</text>
+  <text x="600" y="240" text-anchor="middle" font-size="10" fill="#78716c">→ ResolvedProviderProfile → provider-profile.json</text>
+
+  <!-- Arrows Row1 → Row2 -->
+  <line x1="160" y1="153" x2="230" y2="200" stroke="#a855f7" stroke-width="1.5" marker-end="url(#aP)"/>
+  <line x1="440" y1="153" x2="500" y2="200" stroke="#a855f7" stroke-width="1.5" marker-end="url(#aP)"/>
+  <line x1="670" y1="153" x2="670" y2="200" stroke="#a855f7" stroke-width="1.5" marker-end="url(#aP)"/>
+
+  <!-- Mode filtering box -->
+  <rect x="160" y="290" width="620" height="75" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="2" filter="url(#sh)"/>
+  <text x="470" y="312" text-anchor="middle" font-size="12" font-weight="600" fill="#c2410c">Mode 过滤逻辑 (materializer.py L138)</text>
+
+  <rect x="180" y="325" width="170" height="28" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+  <text x="265" y="343" text-anchor="middle" font-size="10" font-weight="600" fill="#065f46">inherit: 只传 API key</text>
+
+  <rect x="370" y="325" width="180" height="28" rx="5" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="1.5"/>
+  <text x="460" y="343" text-anchor="middle" font-size="10" font-weight="600" fill="#0369a1">overlay: 传全部 env</text>
+
+  <rect x="570" y="325" width="190" height="28" rx="5" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="665" y="343" text-anchor="middle" font-size="10" font-weight="600" fill="#991b1b">isolated: 传 env + unset API</text>
+
+  <!-- Arrow Row2 → Mode -->
+  <line x1="600" y1="260" x2="470" y2="290" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#aO)"/>
+
+  <!-- ===== ROW 3: Per-Provider Assembly ===== -->
+  <text x="30" y="400" font-size="12" font-weight="600" fill="#64748b">各 Provider 组装</text>
+
+  <!-- Claude -->
+  <rect x="30" y="415" width="200" height="95" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2" filter="url(#sh)"/>
+  <text x="130" y="438" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">Claude</text>
+  <text x="130" y="455" text-anchor="middle" font-size="9" fill="#64748b">build_claude_env_prefix()</text>
+  <line x1="50" y1="465" x2="210" y2="465" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="130" y="480" text-anchor="middle" font-size="9" fill="#475569">1. collect API keys</text>
+  <text x="130" y="493" text-anchor="middle" font-size="9" fill="#475569">2. reconcile_base_url()</text>
+  <text x="130" y="506" text-anchor="middle" font-size="9" fill="#475569">3. unset if !inherit_api</text>
+
+  <!-- Codex -->
+  <rect x="250" y="415" width="200" height="95" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2" filter="url(#sh)"/>
+  <text x="350" y="438" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">Codex</text>
+  <text x="350" y="455" text-anchor="middle" font-size="9" fill="#64748b">_env_map() + build_codex_shell_prefix()</text>
+  <line x1="270" y1="465" x2="430" y2="465" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="350" y="480" text-anchor="middle" font-size="9" fill="#475569">1. profile.env + spec.env</text>
+  <text x="350" y="493" text-anchor="middle" font-size="9" fill="#475569">2. CODEX_HOME / CODEX_RUNTIME_DIR</text>
+  <text x="350" y="506" text-anchor="middle" font-size="9" fill="#475569">3. unset if !inherit_api</text>
+
+  <!-- Gemini -->
+  <rect x="470" y="415" width="200" height="95" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2" filter="url(#sh)"/>
+  <text x="570" y="438" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">Gemini</text>
+  <text x="570" y="455" text-anchor="middle" font-size="9" fill="#64748b">build_gemini_env_prefix()</text>
+  <line x1="490" y1="465" x2="650" y2="465" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="570" y="480" text-anchor="middle" font-size="9" fill="#475569">1. explicit_api_env()</text>
+  <text x="570" y="493" text-anchor="middle" font-size="9" fill="#475569">2. cleared_api_env_parts()</text>
+  <text x="570" y="506" text-anchor="middle" font-size="9" fill="#475569">3. export clause</text>
+
+  <!-- Droid/OpenCode -->
+  <rect x="690" y="415" width="220" height="95" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,3" filter="url(#sh)"/>
+  <text x="800" y="438" text-anchor="middle" font-size="12" font-weight="600" fill="#94a3b8">Droid / OpenCode</text>
+  <text x="800" y="455" text-anchor="middle" font-size="9" fill="#94a3b8">(不支持 provider_profile env)</text>
+  <line x1="710" y1="465" x2="890" y2="465" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="800" y="480" text-anchor="middle" font-size="9" fill="#94a3b8">仅 caller_context_env()</text>
+  <text x="800" y="493" text-anchor="middle" font-size="9" fill="#94a3b8">CCB_CALLER_ACTOR</text>
+  <text x="800" y="506" text-anchor="middle" font-size="9" fill="#94a3b8">CCB_SESSION_ID</text>
+
+  <!-- Arrows Mode → Providers -->
+  <line x1="265" y1="365" x2="130" y2="415" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#aB)"/>
+  <line x1="460" y1="365" x2="350" y2="415" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#aB)"/>
+  <line x1="665" y1="365" x2="570" y2="415" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#aB)"/>
+
+  <!-- ===== ROW 4: Output ===== -->
+  <text x="30" y="545" font-size="12" font-weight="600" fill="#64748b">输出</text>
+
+  <!-- Shell Command Assembly -->
+  <rect x="100" y="555" width="750" height="55" rx="8" fill="#f1f5f9" stroke="#64748b" stroke-width="2" filter="url(#sh)"/>
+  <text x="475" y="577" text-anchor="middle" font-size="12" font-weight="600" fill="#334155">Shell 命令拼接</text>
+  <text x="475" y="595" text-anchor="middle" font-size="11" fill="#475569" font-family="monospace">export KEY1=val1; unset KEY2; /path/to/provider --args</text>
+
+  <!-- Arrows Providers → Output -->
+  <line x1="130" y1="510" x2="300" y2="555" stroke="#334155" stroke-width="1.5" marker-end="url(#aR)"/>
+  <line x1="350" y1="510" x2="400" y2="555" stroke="#334155" stroke-width="1.5" marker-end="url(#aR)"/>
+  <line x1="570" y1="510" x2="550" y2="555" stroke="#334155" stroke-width="1.5" marker-end="url(#aR)"/>
+  <line x1="800" y1="510" x2="700" y2="555" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#aR)"/>
+
+  <!-- ===== ROW 5: Execution ===== -->
+  <rect x="100" y="640" width="750" height="60" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="2" filter="url(#sh)"/>
+  <text x="475" y="663" text-anchor="middle" font-size="12" font-weight="600" fill="#991b1b">tmux respawn-pane 执行</text>
+  <text x="475" y="683" text-anchor="middle" font-size="11" fill="#b91c1c" font-family="monospace">tmux respawn-pane -k -t %N -c /cwd /bin/bash -l -c "&lt;env_prefix&gt;; &lt;command&gt;"</text>
+
+  <line x1="475" y1="610" x2="475" y2="640" stroke="#ef4444" stroke-width="2" marker-end="url(#aR)"/>
+
+  <!-- Result box -->
+  <rect x="250" y="715" width="450" height="25" rx="5" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5"/>
+  <text x="475" y="732" text-anchor="middle" font-size="10" fill="#065f46">Provider 进程在 tmux pane 中启动，env 变量已在 shell 中生效</text>
+</svg>

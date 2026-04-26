@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 820" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 6" refX="10" refY="3" markerWidth="10" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,3 L0,6 z" fill="#64748b"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 6" refX="10" refY="3" markerWidth="10" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,3 L0,6 z" fill="#3b82f6"/>
+    </marker>
+    <marker id="arrow-orange" viewBox="0 0 10 6" refX="10" refY="3" markerWidth="10" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,3 L0,6 z" fill="#f59e0b"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 6" refX="10" refY="3" markerWidth="10" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,3 L0,6 z" fill="#10b981"/>
+    </marker>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <filter id="shadow" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1100" height="820" fill="url(#bgGrad)" rx="12"/>
+
+  <!-- Title -->
+  <text x="550" y="35" text-anchor="middle" font-size="20" font-weight="700" fill="#0f172a">CCB 源代码模块架构图</text>
+  <text x="550" y="55" text-anchor="middle" font-size="12" fill="#64748b">Claude Code Bridge — Module Dependency &amp; Data Flow</text>
+
+  <!-- ============ LAYER 1: CLI Entry ============ -->
+  <rect x="350" y="70" width="400" height="60" rx="10" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2" filter="url(#shadow)"/>
+  <text x="550" y="95" text-anchor="middle" font-size="14" font-weight="600" fill="#5b21b6">CLI 入口层</text>
+  <text x="550" y="115" text-anchor="middle" font-size="11" fill="#6d28d9">cli/parser_runtime → cli/services → cli/phase2_runtime</text>
+
+  <!-- ============ LAYER 2: Transport ============ -->
+  <rect x="150" y="160" width="800" height="55" rx="10" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="2" filter="url(#shadow)"/>
+  <text x="550" y="183" text-anchor="middle" font-size="14" font-weight="600" fill="#0369a1">传输层 — Unix Socket RPC</text>
+  <text x="550" y="200" text-anchor="middle" font-size="11" fill="#0284c7">ccbd/socket_client (client) ⟷ ccbd/socket_server (daemon) — JSON over Unix Socket</text>
+
+  <!-- Arrow CLI → Transport -->
+  <line x1="550" y1="130" x2="550" y2="160" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============ LAYER 3: Daemon Core ============ -->
+  <rect x="30" y="255" width="1040" height="130" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="2" filter="url(#shadow)"/>
+  <text x="550" y="278" text-anchor="middle" font-size="14" font-weight="600" fill="#c2410c">ccbd Daemon 调度核心</text>
+
+  <!-- Dispatcher -->
+  <rect x="55" y="290" width="200" height="80" rx="8" fill="#fff" stroke="#f97316" stroke-width="1.5"/>
+  <text x="155" y="315" text-anchor="middle" font-size="12" font-weight="600" fill="#9a3412">JobDispatcher</text>
+  <text x="155" y="332" text-anchor="middle" font-size="10" fill="#78716c">submit / tick / complete</text>
+  <text x="155" y="348" text-anchor="middle" font-size="10" fill="#78716c">lifecycle / reply_delivery</text>
+  <text x="155" y="362" text-anchor="middle" font-size="10" fill="#78716c">completion / restore</text>
+
+  <!-- Handlers -->
+  <rect x="280" y="290" width="180" height="80" rx="8" fill="#fff" stroke="#f97316" stroke-width="1.5"/>
+  <text x="370" y="315" text-anchor="middle" font-size="12" font-weight="600" fill="#9a3412">Handlers</text>
+  <text x="370" y="332" text-anchor="middle" font-size="10" fill="#78716c">submit / get / ack</text>
+  <text x="370" y="348" text-anchor="middle" font-size="10" fill="#78716c">inbox / queue / cancel</text>
+  <text x="370" y="362" text-anchor="middle" font-size="10" fill="#78716c">watch / trace / ping</text>
+
+  <!-- Message Bureau -->
+  <rect x="485" y="290" width="180" height="80" rx="8" fill="#fff" stroke="#f97316" stroke-width="1.5"/>
+  <text x="575" y="315" text-anchor="middle" font-size="12" font-weight="600" fill="#9a3412">MessageBureau</text>
+  <text x="575" y="332" text-anchor="middle" font-size="10" fill="#78716c">MessageRecord</text>
+  <text x="575" y="348" text-anchor="middle" font-size="10" fill="#78716c">AttemptRecord</text>
+  <text x="575" y="362" text-anchor="middle" font-size="10" fill="#78716c">ReplyRecord</text>
+
+  <!-- Keeper / App -->
+  <rect x="690" y="290" width="155" height="80" rx="8" fill="#fff" stroke="#f97316" stroke-width="1.5"/>
+  <text x="767" y="315" text-anchor="middle" font-size="12" font-weight="600" fill="#9a3412">Keeper / App</text>
+  <text x="767" y="332" text-anchor="middle" font-size="10" fill="#78716c">CcbdApp</text>
+  <text x="767" y="348" text-anchor="middle" font-size="10" fill="#78716c">ProjectKeeper</text>
+  <text x="767" y="362" text-anchor="middle" font-size="10" fill="#78716c">supervision</text>
+
+  <!-- Arrow Transport → Daemon -->
+  <line x1="550" y1="215" x2="550" y2="255" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============ LAYER 4: Mailbox ============ -->
+  <rect x="80" y="415" width="350" height="100" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2" filter="url(#shadow)"/>
+  <text x="255" y="438" text-anchor="middle" font-size="14" font-weight="600" fill="#065f46">Mailbox Kernel</text>
+  <text x="255" y="458" text-anchor="middle" font-size="10" fill="#047857">MailboxRecord — 每个 agent 的邮箱状态</text>
+  <text x="255" y="473" text-anchor="middle" font-size="10" fill="#047857">InboundEventRecord — 收件箱事件队列 (JSONL)</text>
+  <text x="255" y="488" text-anchor="middle" font-size="10" fill="#047857">DeliveryLease — 投递租约 (防并发冲突)</text>
+  <text x="255" y="505" text-anchor="middle" font-size="10" fill="#047857">store.py — append-only JSONL 持久化</text>
+
+  <!-- Arrow Daemon → Mailbox -->
+  <line x1="200" y1="385" x2="200" y2="415" stroke="#10b981" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <text x="190" y="405" text-anchor="end" font-size="9" fill="#10b981">读写收件箱</text>
+
+  <!-- ============ LAYER 4: Storage ============ -->
+  <rect x="470" y="415" width="350" height="100" rx="10" fill="#f0fdf4" stroke="#86efac" stroke-width="2" filter="url(#shadow)"/>
+  <text x="645" y="438" text-anchor="middle" font-size="14" font-weight="600" fill="#166534">文件系统存储</text>
+  <text x="645" y="458" text-anchor="middle" font-size="10" fill="#15803d">.ccb/ccbd/mailboxes/{agent}/inbox.jsonl</text>
+  <text x="645" y="473" text-anchor="middle" font-size="10" fill="#15803d">.ccb/ccbd/messages/messages.jsonl</text>
+  <text x="645" y="488" text-anchor="middle" font-size="10" fill="#15803d">.ccb/ccbd/replies/replies.jsonl</text>
+  <text x="645" y="505" text-anchor="middle" font-size="10" fill="#15803d">.ccb/agents/{agent}/jobs.jsonl</text>
+
+  <!-- Arrow Mailbox → Storage -->
+  <line x1="430" y1="465" x2="470" y2="465" stroke="#10b981" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-green)"/>
+
+  <!-- ============ LAYER 5: Provider Execution ============ -->
+  <rect x="30" y="555" width="1040" height="120" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2" filter="url(#shadow)"/>
+  <text x="550" y="578" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">Provider 后端层 — 各 AI Provider 的通信与启动</text>
+
+  <!-- Claude -->
+  <rect x="55" y="590" width="170" height="70" rx="8" fill="#fff" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="140" y="612" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">Claude</text>
+  <text x="140" y="628" text-anchor="middle" font-size="10" fill="#64748b">launcher / comm</text>
+  <text x="140" y="643" text-anchor="middle" font-size="9" fill="#94a3b8">session log 读取</text>
+
+  <!-- Codex -->
+  <rect x="245" y="590" width="170" height="70" rx="8" fill="#fff" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="330" y="612" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">Codex</text>
+  <text x="330" y="628" text-anchor="middle" font-size="10" fill="#64748b">launcher / bridge / comm</text>
+  <text x="330" y="643" text-anchor="middle" font-size="9" fill="#94a3b8">FIFO + session log</text>
+
+  <!-- Gemini -->
+  <rect x="435" y="590" width="170" height="70" rx="8" fill="#fff" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="520" y="612" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">Gemini</text>
+  <text x="520" y="628" text-anchor="middle" font-size="10" fill="#64748b">launcher / comm</text>
+  <text x="520" y="643" text-anchor="middle" font-size="9" fill="#94a3b8">session log 读取</text>
+
+  <!-- Droid -->
+  <rect x="625" y="590" width="130" height="70" rx="8" fill="#fff" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="690" y="612" text-anchor="middle" font-size="12" font-weight="600" fill="#94a3b8">Droid</text>
+  <text x="690" y="628" text-anchor="middle" font-size="10" fill="#94a3b8">launcher only</text>
+  <text x="690" y="643" text-anchor="middle" font-size="9" fill="#94a3b8">(无完整 comm)</text>
+
+  <!-- OpenCode -->
+  <rect x="775" y="590" width="130" height="70" rx="8" fill="#fff" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="840" y="612" text-anchor="middle" font-size="12" font-weight="600" fill="#94a3b8">OpenCode</text>
+  <text x="840" y="628" text-anchor="middle" font-size="10" fill="#94a3b8">launcher only</text>
+  <text x="840" y="643" text-anchor="middle" font-size="9" fill="#94a3b8">(无完整 comm)</text>
+
+  <!-- Others -->
+  <rect x="925" y="590" width="125" height="70" rx="8" fill="#fff" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="987" y="612" text-anchor="middle" font-size="11" font-weight="600" fill="#94a3b8">Copilot/Qwen</text>
+  <text x="987" y="628" text-anchor="middle" font-size="10" fill="#94a3b8">...</text>
+
+  <!-- Arrow Daemon → Providers -->
+  <line x1="350" y1="385" x2="350" y2="555" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <text x="355" y="470" font-size="9" fill="#3b82f6">调度执行</text>
+
+  <!-- ============ LAYER 6: Terminal / Tmux ============ -->
+  <rect x="150" y="710" width="800" height="55" rx="10" fill="#fef2f2" stroke="#ef4444" stroke-width="2" filter="url(#shadow)"/>
+  <text x="550" y="733" text-anchor="middle" font-size="14" font-weight="600" fill="#991b1b">终端层 — tmux</text>
+  <text x="550" y="750" text-anchor="middle" font-size="11" fill="#b91c1c">terminal_runtime/tmux_backend → tmux_respawn_service → respawn-pane (env prefix + command)</text>
+
+  <!-- Arrow Providers → Terminal -->
+  <line x1="400" y1="675" x2="400" y2="710" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============ SIDE: Provider Core ============ -->
+  <rect x="860" y="415" width="210" height="100" rx="10" fill="#faf5ff" stroke="#a855f7" stroke-width="2" filter="url(#shadow)"/>
+  <text x="965" y="438" text-anchor="middle" font-size="13" font-weight="600" fill="#7e22ce">Provider Core</text>
+  <text x="965" y="456" text-anchor="middle" font-size="10" fill="#7c3aed">protocol (CCB_REQ_ID/DONE)</text>
+  <text x="965" y="471" text-anchor="middle" font-size="10" fill="#7c3aed">caller_env (CCB_上下文)</text>
+  <text x="965" y="486" text-anchor="middle" font-size="10" fill="#7c3aed">session_binding</text>
+  <text x="965" y="501" text-anchor="middle" font-size="10" fill="#7c3aed">runtime_shared</text>
+
+  <!-- Arrow Provider Core ↔ Providers -->
+  <line x1="965" y1="515" x2="850" y2="590" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+  <text x="930" y="555" font-size="9" fill="#a855f7">共享协议</text>
+
+  <!-- ============ SIDE: Config ============ -->
+  <rect x="860" y="255" width="210" height="75" rx="10" fill="#fefce8" stroke="#eab308" stroke-width="2" filter="url(#shadow)"/>
+  <text x="965" y="278" text-anchor="middle" font-size="13" font-weight="600" fill="#a16207">Config 加载</text>
+  <text x="965" y="296" text-anchor="middle" font-size="10" fill="#a8a29e">agents/config_loader</text>
+  <text x="965" y="311" text-anchor="middle" font-size="10" fill="#a8a29e">provider_profiles/materializer</text>
+
+  <!-- Arrow Config → Daemon -->
+  <line x1="860" y1="310" x2="835" y2="340" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#arrow-orange)"/>
+
+  <!-- ============ LEGEND ============ -->
+  <rect x="30" y="775" width="1040" height="35" rx="6" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+  <line x1="50" y1="793" x2="80" y2="793" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="85" y="797" font-size="10" fill="#64748b">调用方向</text>
+  <line x1="170" y1="793" x2="200" y2="793" stroke="#10b981" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow-green)"/>
+  <text x="205" y="797" font-size="10" fill="#64748b">数据持久化</text>
+  <rect x="310" y="785" width="40" height="16" rx="3" fill="#fff" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="355" y="797" font-size="10" fill="#64748b">未完成实现</text>
+  <rect x="460" y="785" width="40" height="16" rx="3" fill="#fff" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="505" y="797" font-size="10" fill="#64748b">完整实现</text>
+  <text x="600" y="797" font-size="10" fill="#94a3b8">|  虚线边框 = Droid/OpenCode/Copilot/Qwen 缺少完整通信器，无法参与 inter-agent 通信</text>
+</svg>
